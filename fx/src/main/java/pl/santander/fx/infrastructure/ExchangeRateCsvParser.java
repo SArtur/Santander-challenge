@@ -33,8 +33,8 @@ import java.util.stream.Collectors;
 @Component
 final class ExchangeRateCsvParser {
 
-    private static final String CURRENCY_CODES_SPLIT_SIGN = "/";
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss:SSS");
+    private static final String CURRENCY_CODES_SPLIT_SIGN = "/";
     private static final CSVFormat CSV_FORMAT = CSVFormat.DEFAULT;
 
     Collection<ExchangeRate> parse(String data) {
@@ -45,6 +45,7 @@ final class ExchangeRateCsvParser {
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
         } catch (IOException e) {
+            log.error("Parse exception occured", e);
             throw new ExchangeRateMessageParseException(e);
         }
     }

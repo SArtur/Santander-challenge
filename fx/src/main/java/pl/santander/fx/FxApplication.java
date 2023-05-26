@@ -17,7 +17,7 @@ public class FxApplication implements CommandLineRunner {
 
     }
 
-    //TODO remove. For REST call demonstrating purposes
+    //TODO remove. For REST call demonstrating purposes only
     @Override
     public void run(String... args) throws Exception {
         String msg = """

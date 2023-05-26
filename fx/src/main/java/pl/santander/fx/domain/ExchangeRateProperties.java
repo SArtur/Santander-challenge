@@ -20,7 +20,7 @@ public class ExchangeRateProperties {
      * Margins should be given as percentage value, e.g. 0.1 which equals to 0.1 % margin
      */
     @Setter
-    static class Commission {
+    public static class Commission {
 
         private String askMarginPercent = "0";
         private String bidMarginPercent = "0";

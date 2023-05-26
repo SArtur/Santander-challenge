@@ -1,9 +1,11 @@
 package pl.santander.fx;
 
+import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
 import pl.santander.fx.api.ExchangeRateController;
 import pl.santander.fx.api.ExchangeRateDto;
@@ -13,9 +15,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static io.restassured.RestAssured.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = {
         "exchange-rate.scale=5",
         "exchange-rate.commission.ask-margin-percent=2",
@@ -27,6 +30,8 @@ class ExchangeRateIT {
     private ExchangeRateController exchangeRateController;
     @Autowired
     private MsgSystemListener msgSystemListener;
+    @LocalServerPort
+    private int port;
     private DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss:SSS");
 
     @BeforeEach
@@ -42,17 +47,24 @@ class ExchangeRateIT {
         msgSystemListener.onMessage(msg);
     }
 
+    @BeforeEach
+    void init() {
+        RestAssured.port = port;
+    }
+
     @Test
     void shouldReturnExchangeRateWithAppliedCommission() {
-        //given storage initialized
+        //given
+        //storage initialized
         var expectedResult = createExchangeRate();
 
         //when
-        var exchangeRate = exchangeRateController.getExchangeRate("EUR", "USD"); //TODO use restAssued/restTemplate
+        var exchangeRateDto = when()
+                .get("/api/exchange-rate?from=EUR&to=USD").as(ExchangeRateDto.class);
 
         //then
-        System.out.println(exchangeRate.toString());
-        assertThat(exchangeRate)
+        System.out.println(exchangeRateDto.toString());
+        assertThat(exchangeRateDto)
                 .usingRecursiveComparison().isEqualTo(expectedResult);
     }
 

@@ -8,4 +8,5 @@ public interface ExchangeRateRepository {
     ExchangeRate getExchangeRate(Currency from, Currency to);
 
     void saveExchangeRates(Collection<ExchangeRate> exchangeRates);
+
 }

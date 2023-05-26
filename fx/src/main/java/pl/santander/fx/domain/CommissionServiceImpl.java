@@ -1,11 +1,13 @@
 package pl.santander.fx.domain;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 class CommissionServiceImpl implements CommissionService {
@@ -15,6 +17,7 @@ class CommissionServiceImpl implements CommissionService {
 
     @Override
     public ExchangeRate modifyRate(ExchangeRate exchangeRate) {
+        log.debug("Applying commission - ask: {}%, bid {}%", properties.getCommission().getAskMarginPercent(), properties.getCommission().getBidMarginPercent());
         return ExchangeRate.builder()
                 .from(exchangeRate.getFrom())
                 .to(exchangeRate.getTo())
